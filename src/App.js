@@ -1,17 +1,12 @@
 import { useEffect } from 'react';
 import HomePage from './HomePage';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {
-  BrowserRouter as Router
-} from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import './App.css';
 import useToken, { Login } from './utils/useToken';
 import { gapi } from 'gapi-script';
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Button, Dialog, DialogActions,
-  DialogContent, DialogContentText, DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { http } from 'gra-react-utils';
 import { App as App2 } from '@capacitor/app';
 import { Network } from '@capacitor/network';
@@ -60,9 +55,7 @@ function VDialog() {
 function App() {
 
   const { token, setToken, logOut } = useToken();
-
-
-
+  
   const dispatch = useDispatch();
 
   const disableds = useLiveQuery(

@@ -103,22 +103,6 @@ export const Form = () => {
         });
       }
     }
-    // else {
-    //   try {
-    //     var s = localStorage.getItem("setting");
-    //     if (s) {
-    //       s = JSON.parse(s);
-    //       var o2 = {};
-    //       o2.desaparecido = s.desaparecido;
-    //       o2.abreviatura = s.abreviatura;
-    //       o2.nombaperesponsable = s.nombaperesponsable;
-    //       o2.cargoresponsable = s.cargoresponsable;
-    //       set({ ...o, ...o2 });
-    //     }
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
   }, [pid]);
 
   const { width, height } = useResize(React);
@@ -129,13 +113,12 @@ export const Form = () => {
       const [body, toolBar] = formRef.current.children;
       const nav = document.querySelector('nav');
       body.style.height = (height - header.offsetHeight - toolBar.offsetHeight) + 'px';
-      body.style.width = (width - nav.offsetWidth-32) + 'px';
-      toolBar.style.width = (width - nav.offsetWidth-32) + 'px';
+      toolBar.style.width = (width - nav.offsetWidth) + 'px';
     }
   }, [width, height]);
 
   useEffect(() => {
-    dispatch({ type: 'title', title: 'Administración de Tickets para Atención al Ciudadano - GORE Áncash' });
+    dispatch({ type: 'title', title: 'Gestión de Persona Desaparecida.' });
     fetchData()
   }, []);
 
@@ -162,12 +145,12 @@ export const Form = () => {
       console.log('o.idPersona', o.idPersona);
       if (!o.idPersona) {
         var o3 = { nombres: o.nombres, apePaterno: o.apePaterno, apeMaterno: o.apeMaterno, dni: o.dni, direccion: o.direccion, fechaNacimiento: o.fechaNacimiento, edad: o.edad, sexo: o.sexo, estadoCivil: o.estadoCivil, foto: o.foto };
-        let resultP=await http.post(process.env.REACT_APP_PATH + '/persona', o3);
-          set(o => ({ ...o, idPersona: resultP.id }));
-          o.idPersona = resultP.id;
+        let resultP = await http.post(process.env.REACT_APP_PATH + '/persona', o3);
+        set(o => ({ ...o, idPersona: resultP.id }));
+        o.idPersona = resultP.id;
       }
-      if(o.idPersona){
-        var o2 = { ...o, dependencia: { id: o.dependencia }, distrito: { id: o.distrito }, persona: { id:o.idPersona }, estado: 0 };
+      if (o.idPersona) {
+        var o2 = { ...o, dependencia: { id: o.dependencia }, distrito: { id: o.distrito }, persona: { id: o.idPersona }, estado: 0 };
         http.post(process.env.REACT_APP_PATH + '/desaparecido', o2).then(async (result) => {
           if (!o2._id) {
             if (result.id) {
@@ -293,7 +276,7 @@ export const Form = () => {
         }
       });
     } else {
-      set(o => ({ ...o, nombres: '', apePaterno: '', apeMaterno: '', direccion: '', fechaNacimiento: '', edad: '', sexo: 'Masculino', estadoCivil: 'Soltero(a)' }), () => {
+      set(o => ({ ...o, nombres: '', apePaterno: '', apeMaterno: '', direccion: '', fechaNacimiento: '', edad: '', sexo: 'Masculino', estadoCivil: 'Soltero(a)', foto: '' }), () => {
         o.nombres = '';
         o.apePaterno = '';
         o.apeMaterno = '';
@@ -302,6 +285,7 @@ export const Form = () => {
         o.edad = '';
         o.sexo = 'Masculino';
         o.estadoCivil = 'Soltero(a)';
+        o.foto = '';
       });
     }
   }
@@ -318,20 +302,18 @@ export const Form = () => {
   }
 
   function getContent() {
+
     return <LocalizationProvider dateAdapter={AdapterDayjs}><ThemeProvider theme={theme}>
       <form ref={formRef} onSubmit={onSubmit} style={{ textAlign: 'left' }}>
         <Box style={{ overflow: 'auto' }}>
-
           <Card className='mt-1 bs-black'>
-
             <CardContent>
               <Typography gutterBottom variant="h5" className='text-center fw-bold color-gore'>
                 DATOS DEL DESAPARECIDO
-
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
 
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -350,7 +332,7 @@ export const Form = () => {
                     {...defaultProps("nroDenuncia")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <DateTimePicker
                     renderInput={(props) => <TextField {...props} />}
                     required
@@ -359,10 +341,8 @@ export const Form = () => {
                     onChange={onChangeFechaHoraDenuncia}
                   />
                 </Grid>
-              </Grid>
 
-              <Grid container>
-                <Grid item xs={12} md={12}>
+                <Grid item xs={12} md={12} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     className='select'
                     select
@@ -387,16 +367,15 @@ export const Form = () => {
                   </TextField>
                 </Grid>
               </Grid>
-            </CardContent>
 
-            <Divider variant="middle" />
+              <Divider variant="middle" sx={{ marginY: '20px', marginX: '0px', border: '1px solid #0000001f' }} />
 
-            <CardContent>
               <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
                 DATOS DE LOS HECHOS
               </Typography>
+
               <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -410,7 +389,7 @@ export const Form = () => {
                     {...defaultProps("lugarHecho")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <DateTimePicker
                     required
                     renderInput={(props) => <TextField {...props} />}
@@ -419,9 +398,7 @@ export const Form = () => {
                     onChange={onChangeFechaHoraHecho}
                   />
                 </Grid>
-              </Grid>
-              <Grid container spacing={1}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     select
                     margin="normal"
@@ -445,7 +422,7 @@ export const Form = () => {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     select
                     margin="normal"
@@ -471,7 +448,7 @@ export const Form = () => {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     select
                     margin="normal"
@@ -497,16 +474,14 @@ export const Form = () => {
                   </TextField>
                 </Grid>
               </Grid>
-            </CardContent>
 
-            <Divider variant="middle" />
+              <Divider variant="middle" sx={{ marginY: '20px', marginX: '0px', border: '1px solid #0000001f' }} />
 
-            <CardContent>
               <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
                 DATOS PERSONALES
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} md={6} >
+                <Grid item xs={12} md={6}>
                   <TextField
                     type={'number'}
                     sx={{ fontWeight: 'bold' }}
@@ -527,12 +502,10 @@ export const Form = () => {
                     {...defaultProps("dni")}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <img width={'20%'} src={'data:image/png;base64, ' + o.foto} />
+                <Grid item xs={12} md={6} sx={{ paddingTop: '0px !important' }}>
+                  <img alt="Foto" width={'20%'} src={o.foto ? 'data:image/png;base64, ' + o.foto : (process.env.PUBLIC_URL + "/male-female.jpg")} />
                 </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     margin="normal"
@@ -552,7 +525,7 @@ export const Form = () => {
                     {...defaultProps("apePaterno")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     margin="normal"
@@ -572,7 +545,7 @@ export const Form = () => {
                     {...defaultProps("apeMaterno")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     margin="normal"
@@ -592,10 +565,7 @@ export const Form = () => {
                     {...defaultProps("nombres")}
                   />
                 </Grid>
-              </Grid>
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     margin="normal"
@@ -615,7 +585,7 @@ export const Form = () => {
                     {...defaultProps("direccion")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4} >
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <DesktopDatePicker
                     disabled={disabled()}
                     label="Ingrese su Fecha de Nacimiento."
@@ -645,9 +615,7 @@ export const Form = () => {
                       />}
                   />
                 </Grid>
-              </Grid>
-              <Grid container spacing={1}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     type={'number'}
@@ -668,7 +636,7 @@ export const Form = () => {
                     {...defaultProps("edad")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     select
@@ -695,7 +663,7 @@ export const Form = () => {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     disabled={disabled()}
                     select
@@ -722,11 +690,9 @@ export const Form = () => {
                   </TextField>
                 </Grid>
               </Grid>
-            </CardContent>
 
-            <Divider variant="middle" />
+              <Divider variant="middle" sx={{ marginY: '20px', marginX: '0px', border: '1px solid #0000001f' }} />
 
-            <CardContent>
               <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
                 CARACTERÍSTICAS
               </Typography>
@@ -788,10 +754,7 @@ export const Form = () => {
                     {...defaultProps("ojos")}
                   />
                 </Grid>
-              </Grid>
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -810,7 +773,7 @@ export const Form = () => {
                     {...defaultProps("sangre")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -829,7 +792,7 @@ export const Form = () => {
                     {...defaultProps("boca")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -848,10 +811,7 @@ export const Form = () => {
                     {...defaultProps("nariz")}
                   />
                 </Grid>
-              </Grid>
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -870,7 +830,7 @@ export const Form = () => {
                     {...defaultProps("cabello")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -889,7 +849,7 @@ export const Form = () => {
                     {...defaultProps("estatura")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -908,10 +868,7 @@ export const Form = () => {
                     {...defaultProps("contextura")}
                   />
                 </Grid>
-              </Grid>
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -925,7 +882,7 @@ export const Form = () => {
                     {...defaultProps("vestimenta")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -939,7 +896,7 @@ export const Form = () => {
                     {...defaultProps("circunstancia")}
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
                     required
@@ -954,27 +911,662 @@ export const Form = () => {
                   />
                 </Grid>
               </Grid>
-
             </CardContent>
           </Card>
-
         </Box>
         <Stack direction="row" justifyContent="center"
           style={{ padding: '10px', backgroundColor: '#0f62ac' }}
           alignItems="center" spacing={1}>
           {getActions()}
         </Stack>
-
-        {(o._id || o.id) && <Fab color="primary" aria-label="add"
-          onClick={onClickAdd}
-          style={{
-            position: 'absolute',
-            bottom: 80, right: 24
-          }}>
-          <AddIcon />
-        </Fab>}
       </form>
     </ThemeProvider></LocalizationProvider>
+
+
+
+    // return <LocalizationProvider dateAdapter={AdapterDayjs}><ThemeProvider theme={theme}>
+    //   <form ref={formRef} onSubmit={onSubmit} style={{ textAlign: 'left' }}>
+    //     <Box style={{ overflow: 'auto' }}>
+    //       <Card className='mt-1 bs-black'>
+    //         <CardContent>
+    //           <Typography gutterBottom variant="h5" className='text-center fw-bold color-gore'>
+    //             DATOS DEL DESAPARECIDO
+    //           </Typography>
+
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Nro Denuncia: "
+    //                 placeholder="Ingrese el número de Denuncia."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("nroDenuncia")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <DateTimePicker
+    //                 renderInput={(props) => <TextField {...props} />}
+    //                 required
+    //                 label="Fecha y Hora de la Denuncia:"
+    //                 value={o.fechaHoraDenuncia || ''}
+    //                 onChange={onChangeFechaHoraDenuncia}
+    //               />
+    //             </Grid>
+    //           </Grid>
+
+    //           <Grid container>
+    //             <Grid item xs={12} md={12}>
+    //               <TextField
+    //                 className='select'
+    //                 select
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Seleccione la Dependencia: "
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("dependencia")}
+    //               >
+    //                 {dependencias.map((item, i) => (
+    //                   <MenuItem key={item.id} value={item.id}>
+    //                     {item.name} - {item.descripcion}
+    //                   </MenuItem>
+    //                 ))}
+    //               </TextField>
+    //             </Grid>
+    //           </Grid>
+
+    //           <Divider variant="middle" />
+
+    //           <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
+    //             DATOS DE LOS HECHOS
+    //           </Typography>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={8}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 multiline
+    //                 size="medium"
+    //                 rows={4}
+    //                 id="standard-name"
+    //                 label="Ingrese el Lugar de los Hechos: "
+    //                 placeholder="Lugar de los Hechos"
+    //                 {...defaultProps("lugarHecho")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <DateTimePicker
+    //                 required
+    //                 renderInput={(props) => <TextField {...props} />}
+    //                 label="Fecha y Hora del Hecho:"
+    //                 value={o.fechaHoraHecho || ''}
+    //                 onChange={onChangeFechaHoraHecho}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={1}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 select
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Seleccione el Departamento: "
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("departamento")}
+    //               >
+    //                 {departamentos.map((item, i) => (
+    //                   <MenuItem key={item.code} value={item.code}>
+    //                     {item.name}
+    //                   </MenuItem>
+    //                 ))}
+    //               </TextField>
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 select
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Seleccione la Provincia: "
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("provincia", {
+    //                   // onChange: onChangeTipoDocumento
+    //                 })}
+    //               >
+    //                 {provincias.filter(e => e.code.startsWith(o.departamento)).map((item, i) => (
+    //                   <MenuItem key={item.code} value={item.code}>
+    //                     {item.name}
+    //                   </MenuItem>
+    //                 ))}
+    //               </TextField>
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 select
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Seleccione el Distrito: "
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("distrito", {
+    //                 })}
+    //               >
+    //                 {distritos.filter(e => e.code.startsWith(o.provincia)).map((item, i) => (
+    //                   <MenuItem key={item.code} value={item.code}>
+    //                     {item.name}
+    //                   </MenuItem>
+    //                 ))}
+    //               </TextField>
+    //             </Grid>
+    //           </Grid>
+
+    //           <Divider variant="middle" />
+
+    //           <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
+    //             DATOS PERSONALES
+    //           </Typography>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={6} >
+    //               <TextField
+    //                 type={'number'}
+    //                 sx={{ fontWeight: 'bold' }}
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Número de Documento: "
+    //                 placeholder="Ingrese el número de Documento."
+    //                 onKeyUp={onKeyUpNroDocumento}
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("dni")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={6}>
+    //               <img width={'20%'} src={'data:image/png;base64, ' + o.foto} />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Ingrese su Apellido Paterno: "
+    //                 placeholder="Apellido Paterno"
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("apePaterno")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Ingrese su Apellido Materno: "
+    //                 placeholder="Apellido Materno"
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("apeMaterno")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Ingrese su Nombres Completos: "
+    //                 placeholder="Nombres Completos"
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("nombres")}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={8}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Ingrese sus Dirección: "
+    //                 placeholder="Dirección"
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("direccion")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4} >
+    //               <DesktopDatePicker
+    //                 disabled={disabled()}
+    //                 label="Ingrese su Fecha de Nacimiento."
+    //                 inputFormat="DD/MM/YYYY"
+    //                 value={o.fechaNacimiento || ''}
+    //                 onChange={onChangeFechaNacimiento}
+    //                 renderInput={(params) =>
+    //                   <TextField
+    //                     type={'number'}
+    //                     sx={{ fontWeight: 'bold' }}
+    //                     margin="normal"
+    //                     required
+    //                     fullWidth
+    //                     id="standard-name"
+    //                     label="Fecha de Nacimiento: "
+    //                     placeholder="Ingrese su Fecha de Nacimiento."
+    //                     // onKeyUp={onKeyUp}
+    //                     InputProps={{
+    //                       startAdornment: (
+    //                         <InputAdornment position="start">
+    //                           <Keyboard />
+    //                         </InputAdornment>
+    //                       ),
+    //                     }}
+    //                     {...params}
+    //                   // {...defaultProps("fechaNacimiento")}
+    //                   />}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={1}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 type={'number'}
+    //                 sx={{ fontWeight: 'bold' }}
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Edad: "
+    //                 placeholder="Ingrese el Edad."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("edad")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 select
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Seleccione su Género: "
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("sexo", {
+    //                   // onChange: onChangeTipoDocumento
+    //                 })}
+    //               >
+    //                 {['Masculino', 'Femenino'].map((item, i) => (
+    //                   <MenuItem key={'houseAccess_' + i} value={item}>
+    //                     {item}
+    //                   </MenuItem>
+    //                 ))}
+    //               </TextField>
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 disabled={disabled()}
+    //                 select
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 id="standard-name"
+    //                 label="Seleccione su Estado Civil: "
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("estadoCivil", {
+    //                 })}
+    //               >
+    //                 {['Soltero(a)', 'Casado(a)', 'Conviviente', 'Viudo(a)'].map((item, i) => (
+    //                   <MenuItem key={'houseAccess_' + i} value={item}>
+    //                     {item}
+    //                   </MenuItem>
+    //                 ))}
+    //               </TextField>
+    //             </Grid>
+    //           </Grid>
+
+    //           <Divider variant="middle" />
+
+    //           <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
+    //             CARACTERÍSTICAS
+    //           </Typography>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Tez: "
+    //                 placeholder="Tez."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("tez")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Fenotipo: "
+    //                 placeholder="Fenotipo."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("fenotipo")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Ojos: "
+    //                 placeholder="Ojos."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("ojos")}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Sangre: "
+    //                 placeholder="Sangre."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("sangre")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Boca: "
+    //                 placeholder="Boca."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("boca")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Nariz: "
+    //                 placeholder="Nariz."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("nariz")}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Cabello: "
+    //                 placeholder="Cabello."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("cabello")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Estatura: "
+    //                 placeholder="Estatura."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("estatura")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 size="medium"
+    //                 id="standard-name"
+    //                 label="Contextura: "
+    //                 placeholder="Contextura."
+    //                 InputProps={{
+    //                   startAdornment: (
+    //                     <InputAdornment position="start">
+    //                       <Keyboard />
+    //                     </InputAdornment>
+    //                   ),
+    //                 }}
+    //                 {...defaultProps("contextura")}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 multiline
+    //                 size="medium"
+    //                 rows={4}
+    //                 id="standard-name"
+    //                 label="Ingrese la Vestimenta: "
+    //                 placeholder="Vestimenta"
+    //                 {...defaultProps("vestimenta")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 multiline
+    //                 size="medium"
+    //                 rows={4}
+    //                 id="standard-name"
+    //                 label="Ingrese las Circunstancias: "
+    //                 placeholder="Circunstancias"
+    //                 {...defaultProps("circunstancia")}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={4}>
+    //               <TextField
+    //                 margin="normal"
+    //                 required
+    //                 fullWidth
+    //                 multiline
+    //                 size="medium"
+    //                 rows={4}
+    //                 id="standard-name"
+    //                 label="Ingrese las Observaciónes: "
+    //                 placeholder="Observación"
+    //                 {...defaultProps("observacion")}
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //         </CardContent>
+    //       </Card>
+
+    //     </Box>
+    //     <Stack direction="row" justifyContent="center"
+    //       style={{ padding: '10px', backgroundColor: '#0f62ac' }}
+    //       alignItems="center" spacing={1}>
+    //       {getActions()}
+    //     </Stack>
+
+    //     {(o._id || o.id) && <Fab color="primary" aria-label="add"
+    //       onClick={onClickAdd}
+    //       style={{
+    //         position: 'absolute',
+    //         bottom: 80, right: 24
+    //       }}>
+    //       <AddIcon />
+    //     </Fab>}
+    //   </form>
+    // </ThemeProvider></LocalizationProvider >
   }
   return <>{
     1 == 1 ? <Box style={{ textAlign: 'left' }}>{getContent()}</Box>

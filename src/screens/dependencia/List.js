@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import {
-  Button, Checkbox, Fab, styled, Table, TableCell, TextField, TablePagination,
-  TableHead, TableBody, TableRow, TableContainer, Toolbar, Grid, CardContent, Card, Box
+  Button, Checkbox, styled, Table, TableCell, TablePagination,
+  TableHead, TableBody, TableRow, TableContainer, Toolbar, Grid, CardContent, Card
 } from '@mui/material';
 import { Autorenew, TaskAlt } from '@mui/icons-material';
 import { http, useResize, useFormState } from 'gra-react-utils';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { useDispatch, useSelector } from "react-redux";
-import {
-  useNavigate
-} from "react-router-dom";
-import Typography from '@mui/material/Typography';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -163,28 +158,26 @@ const List = () => {
   return (
     <>
       <Card>
-        <CardContent>
+        <CardContent sx={{ padding: '0px' }}>
           <Toolbar className="Toolbar-table" direction="row" >
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={2}>
-              </Grid>
-              <Grid item xs={12} md={2}>
+            <Grid container spacing={2} sx={{ marginY: '1em !important' }}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} startIcon={<TaskAlt />} onClick={createOnClick} variant="contained" color="primary">Registrar</Button>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} startIcon={<EditIcon />} onClick={editOnClick} variant="contained" color="primary">Editar</Button>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} startIcon={<DeleteIcon />} onClick={deleteOnClick} variant="contained" color="primary">Eliminar</Button>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} onClick={onClickRefresh} endIcon={<Autorenew />} variant="contained" color="primary">Actualizar</Button>
               </Grid>
             </Grid>
           </Toolbar>
 
           <TableContainer sx={{ maxWidth: '100%', mx: 'auto', maxHeight: '540px' }}>
-            <Table stickyHeader aria-label="sticky table">
+            <Table stickyHeader aria-label="sticky table" className='mt-5'>
               <TableHead>
                 <TableRow>
                   <StyledTableCell style={{ minWidth: '10%', maxWidth: '10%' }} padding="checkbox" className='bg-gore border-table'>
@@ -200,7 +193,7 @@ const List = () => {
                   </StyledTableCell>
                   <StyledTableCell style={{ minWidth: '60%', maxWidth: '60%' }} className='bg-gore border-table'>Dependencia Policial
                   </StyledTableCell>
-                  <StyledTableCell style={{ minWidth: '30%', maxWidth: '30%' }} className='bg-gore border-table'>Descripcion
+                  <StyledTableCell style={{ minWidth: '30%', maxWidth: '30%' }} className='bg-gore border-table'>Descripción
                   </StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -225,10 +218,10 @@ const List = () => {
                             checked={isItemSelected}
                           />
                         </TableCell>
-                        <TableCell style={{ minWidth: '60%', maxWidth: '60%' }} className='border-table' >
+                        <TableCell style={{ minWidth: '60%', maxWidth: '60%' }} className='border-table'>
                           {row.name}
                         </TableCell>
-                        <TableCell style={{ minWidth: '30%', maxWidth: '30%' }} align="center">
+                        <TableCell style={{ minWidth: '30%', maxWidth: '30%' }} className='border-table'>
                           {row.descripcion}
                         </TableCell>
                       </StyledTableRow >
@@ -255,7 +248,7 @@ const List = () => {
             onRowsPerPageChange={onRowsPerPageChange}
           />
         </CardContent>
-      </Card>
+      </Card >
     </>
   );
 

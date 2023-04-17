@@ -1,36 +1,23 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useFormState, useResize, http } from 'gra-react-utils';
-import { VRadioGroup } from '../../utils/useToken';
 import { db } from '../../db';
 
 import {
-  ExpandMore as ExpandMoreIcon,
   Send as SendIcon,
-  Add as AddIcon,
-  Room as RoomIcon,
-  Search as SearchIcon,
   Keyboard,
-  ReplyAll,
-  WifiProtectedSetup
 } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
-  Accordion, AccordionSummary, AccordionDetails, Alert,
-  Box, Button, Card, CardContent, Checkbox, Fab,
-  FormControl, FormControlLabel, FormGroup, FormLabel, MenuItem, Radio,
-  Stack, InputAdornment, IconButton, TextField, Grid, Typography
+  
+  Box, Button, Card, CardContent, Stack, InputAdornment, TextField, Grid, Typography
 } from '@mui/material';
-import {
-  useNavigate, useParams, useLocation
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Geolocation } from '@capacitor/geolocation';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 export const Form = () => {
-
+ 
   const dispatch = useDispatch();
 
   const networkStatus = useSelector((state) => state.networkStatus);
@@ -41,7 +28,7 @@ export const Form = () => {
 
   const navigate = useNavigate();
 
-  const [o, { defaultProps, handleChange, bindEvents, validate, set }] = useFormState(useState, {
+  const [o, { defaultProps, validate, set }] = useFormState(useState, {
 
   }, {});
 
@@ -91,21 +78,15 @@ export const Form = () => {
     navigate(-1);
   }
 
-  const onClickAdd = async () => {
-    navigate('/dependencia/create', { replace: true });
-  }
-
   const onClickSave = async () => {
     const form = formRef.current;
     if (0 || form != null && validate(form)) {
 
       var o2 = JSON.parse(JSON.stringify(o));
       if (networkStatus.connected) {
-
         http.post(process.env.REACT_APP_PATH + '/dependencia', o2).then(async (result) => {
           if (!o2._id) {
             if (result.id) {
-              // navigate('/dependencia/' + result.id + '/edit', { replace: true });
               dispatch({ type: "snack", msg: 'Registro grabado!' });
               navigate('/dependencia', { replace: true });
             }
@@ -114,16 +95,6 @@ export const Form = () => {
             }
           }
         });
-      } else {
-        if (!o2.id) {
-          o2.tmpId = 1 * new Date();
-          o2.id = -o2.tmpId;
-          //await db.disabled.add(o2);
-          navigate('/' + o2.id + '/edit', { replace: true });
-        } else {
-          //await db.disabled.update(o2.id, o2);
-        }
-        dispatch({ type: "snack", msg: 'Registro grabado!' });
       }
     } else {
       dispatch({ type: "alert", msg: 'Falta campos por completar!' });

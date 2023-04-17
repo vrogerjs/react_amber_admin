@@ -52,6 +52,8 @@ const List = () => {
 
   const networkStatus = useSelector((state) => state.networkStatus);
 
+  const pad = (num, places) => String(num).padStart(places, '0')
+
   const onChangeAllRow = (event) => {
     if (event.target.checked) {
       const newSelected = result.data.map((row) => toID(row));
@@ -166,30 +168,25 @@ const List = () => {
   return (
     <>
       <Card>
-        <CardContent>
+        <CardContent sx={{ padding: '0px' }}>
           <Toolbar className="Toolbar-table" direction="row" >
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={1}>
-              </Grid>
-              <Grid item xs={12} md={2}>
+            <Grid container spacing={2} sx={{ marginY: '1em !important' }}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} startIcon={<TaskAlt />} onClick={createOnClick} variant="contained" color="primary">Registrar</Button>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} startIcon={<EditIcon />} onClick={editOnClick} variant="contained" color="primary">Editar</Button>
               </Grid>
-              <Grid item xs={12} md={2}>
-                <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} startIcon={<DeleteIcon />} onClick={deleteOnClick} variant="contained" color="primary">Eliminar</Button>
-              </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} startIcon={<PictureAsPdf />} onClick={verAlertaOnClick} variant="contained" color="primary">Ver Alerta</Button>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} onClick={onClickRefresh} endIcon={<Autorenew />} variant="contained" color="primary">Actualizar</Button>
               </Grid>
             </Grid>
           </Toolbar>
           <TableContainer sx={{ maxWidth: '100%', mx: 'auto', maxHeight: '540px' }}>
-            <Table stickyHeader aria-label="sticky table">
+            <Table stickyHeader aria-label="sticky table" className='mt-5'>
               <TableHead>
                 <TableRow>
                   <StyledTableCell padding="checkbox" className='bg-gore border-table'>
@@ -204,19 +201,14 @@ const List = () => {
                     />
                   </StyledTableCell>
                   <StyledTableCell style={{ minWidth: '15%', maxWidth: '15%' }} className='bg-gore border-table'>DNI
-                    {/* <TextField {...defaultProps('dependencia')} style={{ padding: 0, marginTop: '5px !important' }} /> */}
                   </StyledTableCell>
                   <StyledTableCell style={{ minWidth: '20%', maxWidth: '20%' }} className='bg-gore border-table'>Apellidos y Nombres
-                    {/* <TextField {...defaultProps('abreviatura')} style={{ padding: 0, marginTop: '5px !important' }} /> */}
                   </StyledTableCell>
                   <StyledTableCell style={{ minWidth: '20%', maxWidth: '20%' }} className='bg-gore border-table'>Fecha de Nacimiento
-                    {/* <TextField {...defaultProps('abreviatura')} style={{ padding: 0, marginTop: '5px !important' }} /> */}
                   </StyledTableCell>
                   <StyledTableCell style={{ minWidth: '15%', maxWidth: '15%' }} className='bg-gore border-table'>Nº Denuncia
-                    {/* <TextField {...defaultProps('nombaperesponsable')} style={{ padding: 0, marginTop: '5px !important' }} /> */}
                   </StyledTableCell>
                   <StyledTableCell style={{ minWidth: '20%', maxWidth: '20%' }} className='bg-gore border-table'>Lugar del Hecho
-                    {/* <TextField {...defaultProps('cargoresponsable')} style={{ padding: 0, marginTop: '5px !important' }} /> */}
                   </StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -241,19 +233,19 @@ const List = () => {
                             checked={isItemSelected}
                           />
                         </TableCell>
-                        <TableCell style={{ width: '15%', maxWidth: '15%' }} className='border-table' >
+                        <TableCell style={{ width: '15%', maxWidth: '15%' }} className='border-table' align="center">
                           {row.persona.dni}
                         </TableCell>
-                        <TableCell style={{ minWidth: '20%', maxWidth: '20%' }} align="center">
+                        <TableCell style={{ minWidth: '20%', maxWidth: '20%' }}>
                           {row.persona.nombres} {row.persona.apePaterno} {row.persona.apeMaterno}
                         </TableCell>
-                        <TableCell style={{ width: '20%', maxWidth: '20%' }} className='border-table' >
-                          {row.persona.fechaNacimiento}
+                        <TableCell style={{ width: '20%', maxWidth: '20%' }} className='border-table' align="center">
+                          {pad(row.persona.fechaNacimiento[2], 2)}/{pad(row.persona.fechaNacimiento[1], 2)}/{row.persona.fechaNacimiento[0]}
                         </TableCell>
                         <TableCell style={{ minWidth: '15%', maxWidth: '15%' }} className='border-table' align="center">
                           {row.nroDenuncia}
                         </TableCell>
-                        <TableCell style={{ minWidth: '20%', maxWidth: '20%' }} className='border-table' align="center">
+                        <TableCell style={{ minWidth: '20%', maxWidth: '20%' }} className='border-table'>
                           {row.lugarHecho}
                         </TableCell>
                       </StyledTableRow >
