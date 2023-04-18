@@ -104,7 +104,7 @@ const List = () => {
   const fetchData = async (page) => {
     var data = { data: [] };
     if (networkStatus.connected) {
-      const result = await http.get(process.env.REACT_APP_PATH + '/desaparecido/' + page + '/' + state.rowsPerPage);
+      const result = await http.get(process.env.REACT_APP_PATH + '/desaparecido/' + page + '/' + state.rowsPerPage + '?estado=0');
       data.size = result.size;
       data.data = data.data.concat(result.content);
     }
