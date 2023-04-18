@@ -129,7 +129,7 @@ const List = () => {
   return (
     <>
       <Card>
-        <CardContent>
+        <CardContent sx={{ padding: '0px' }}>
           <Toolbar className="Toolbar-table" direction="row" >
             <Grid container spacing={2}>
               <Grid item xs={12} md={9}>
@@ -140,7 +140,7 @@ const List = () => {
             </Grid>
           </Toolbar>
           <TableContainer sx={{ maxWidth: '100%', mx: 'auto', maxHeight: '540px' }}>
-            <Table stickyHeader aria-label="sticky table">
+            <Table stickyHeader aria-label="sticky table" className='mt-5'>
               <TableHead>
                 <TableRow>
                   <StyledTableCell padding="checkbox" className='bg-gore border-table'>

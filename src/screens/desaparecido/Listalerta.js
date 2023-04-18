@@ -104,7 +104,7 @@ const List = () => {
           result.edad = result.persona.edad;
           result.fechaNacimiento = result.persona.fechaNacimiento;
           result.direccion = result.persona.direccion;
-          console.log(JSON.stringify(result));
+          result.foto = result.persona.foto;
           set(result);
         });
       }
@@ -223,15 +223,10 @@ const List = () => {
                     DATOS DE LA PERSONA DESAPARECIDA
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={12} md={4} className='mt-3' sx={{ paddingLeft: '1rem' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ height: '200px', width: '200px', margin: 'auto' }}
-                    image={process.env.PUBLIC_URL + "/little-boy.jpg"}
-                    alt="Busqueda SISGEDO."
-                  />
+                <Grid item xs={12} sm={12} md={4} className='mt-4' sx={{ paddingLeft: '1rem', marginTop: '5px' }}>
+                  <img alt="Foto" height={'200px'} width={'150px'} margin={'auto'} src={o.foto ? 'data:image/png;base64, ' + o.foto : (process.env.PUBLIC_URL + "/male-female.jpg")} />
                 </Grid>
-                <Grid item xs={12} sm={12} md={8} className='mt-3' sx={{ paddingLeft: '1rem' }}>
+                <Grid item xs={12} sm={12} md={8} sx={{ paddingLeft: '1rem', marginTop: '15px' }}>
                   <Grid item xs={12} sm={12} md={12} sx={{ display: 'flex' }}>
                     <Typography gutterBottom component="div" fontSize={'16px'} className='fw-bold mb-0w' sx={{ textTransform: 'uppercase' }}>
                       APELLIDOS :
