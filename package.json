@@ -30,7 +30,7 @@
     "dexie-react-hooks": "^1.1.1",
     "gapi-script": "^1.2.0",
     "gra-react-utils": "^1.0.68",
-    "ol": "^7.1.0",
+    "ol": "^7.3.0",
     "plotly.js-dist": "^2.16.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

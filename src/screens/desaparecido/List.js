@@ -7,7 +7,7 @@ import {
   Button, Checkbox, Fab, styled, Table, TableCell, TextField, TablePagination,
   TableHead, TableBody, TableRow, TableContainer, Toolbar, Grid, CardContent, Card
 } from '@mui/material';
-import { Autorenew, PictureAsPdf, TaskAlt } from '@mui/icons-material';
+import { Autorenew, PersonSearch, PictureAsPdf, TaskAlt } from '@mui/icons-material';
 import { http, useResize, useFormState } from 'gra-react-utils';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { useDispatch, useSelector } from "react-redux";
@@ -146,15 +146,13 @@ const List = () => {
     navigate('/desaparecido/alerta/' + selected[0]);
   }
 
-  const deleteOnClick = () => {
+  const onClickEncontrar = () => {
     dispatch({
-      type: "confirm", msg: 'Esta seguro de eliminar el registro seleccionado?', cb: (e) => {
+      type: "confirm", msg: 'Se encontro a la persona seleccionada?', cb: (e) => {
         if (e) {
-          http.delete('/desaparecido/' + selected.join(',')).then((result) => {
-
-            dispatch({ type: 'snack', msg: 'Registro' + (selected.length > 1 ? 's' : '') + ' eliminado!' });
-            onClickRefresh();
-
+          http.get(process.env.REACT_APP_PATH + '/desaparecido/change/' + selected[0] + '?estado=1').then(e => {
+            navigate('/desaparecido');
+            dispatch({ type: "snack", msg: 'Persona encontrada.!' });
           });
         }
       }
@@ -181,7 +179,7 @@ const List = () => {
                 <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} startIcon={<PictureAsPdf />} onClick={verAlertaOnClick} variant="contained" color="primary">Ver Alerta</Button>
               </Grid>
               <Grid item xs={12} sm={12} md={3}>
-                <Button sx={{ width: '100%', fontWeight: 'bold' }} onClick={onClickRefresh} endIcon={<Autorenew />} variant="contained" color="primary">Actualizar</Button>
+                <Button sx={{ width: '100%', fontWeight: 'bold' }} disabled={!selected.length} onClick={onClickEncontrar} startIcon={<PersonSearch />} variant="contained" color="primary">Cambiar estado</Button>
               </Grid>
             </Grid>
           </Toolbar>

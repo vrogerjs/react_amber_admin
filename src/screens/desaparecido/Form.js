@@ -24,6 +24,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import Divider from '@mui/material/Divider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { makeStyles } from '@material-ui/core/styles';
+import MapWrapper from '../../components/MapWrapper'
 
 export const Form = () => {
 
@@ -48,7 +49,9 @@ export const Form = () => {
   const [state, setState] = useState({ page: 0, rowsPerPage: 50 });
 
   const [o, { defaultProps, handleChange, bindEvents, validate, set }] = useFormState(useState, {
-    departamento: '00'
+    departamento: '00',
+    latitud: '',
+    longitud: ''
   }, {});
 
   const [d] = useFormState(useState, {
@@ -98,6 +101,7 @@ export const Form = () => {
           result.edad = result.persona.edad;
           result.fechaNacimiento = result.persona.fechaNacimiento;
           result.direccion = result.persona.direccion;
+          result.foto = result.persona.foto;
           console.log(JSON.stringify(result));
           set(result);
         });
@@ -137,12 +141,9 @@ export const Form = () => {
     navigate('/desaparecido/create', { replace: true });
   }
 
-
-
   const onClickSave = async () => {
     const form = formRef.current;
     if (0 || form != null && validate(form)) {
-      console.log('o.idPersona', o.idPersona);
       if (!o.idPersona) {
         var o3 = { nombres: o.nombres, apePaterno: o.apePaterno, apeMaterno: o.apeMaterno, dni: o.dni, direccion: o.direccion, fechaNacimiento: o.fechaNacimiento, edad: o.edad, sexo: o.sexo, estadoCivil: o.estadoCivil, foto: o.foto };
         let resultP = await http.post(process.env.REACT_APP_PATH + '/persona', o3);
@@ -150,6 +151,7 @@ export const Form = () => {
         o.idPersona = resultP.id;
       }
       if (o.idPersona) {
+        console.log(o);
         var o2 = { ...o, dependencia: { id: o.dependencia }, distrito: { id: o.distrito }, persona: { id: o.idPersona }, estado: 0 };
         http.post(process.env.REACT_APP_PATH + '/desaparecido', o2).then(async (result) => {
           if (!o2._id) {
@@ -375,6 +377,16 @@ export const Form = () => {
               </Typography>
 
               <Grid container spacing={2}>
+                <Grid item xs={12} md={12}>
+                  <MapWrapper
+                    location={[o.longitud ? o.longitud : -77.52888423325149, o.latitud ? o.latitud : -9.529897122270743]}
+                    features={[]} onChange={(e) => {
+                      o.longitud = e.lonLat[0];
+                      o.latitud = e.lonLat[1];
+                      o.lugarHecho = e.address;
+                      //  set(o => ({ ...o, lugarHecho: e.address, longitud: e.lonLat[0], latitud: e.lonLat[1] }));
+                    }} />
+                </Grid>
                 <Grid item xs={12} md={8} sx={{ paddingTop: '0px !important' }}>
                   <TextField
                     margin="normal"
@@ -396,6 +408,22 @@ export const Form = () => {
                     label="Fecha y Hora del Hecho:"
                     value={o.fechaHoraHecho || ''}
                     onChange={onChangeFechaHoraHecho}
+                  />
+                  <TextField
+                    hidden
+                    style={{ display: 'none' }}
+                    margin="normal"
+                    required
+                    size="medium"
+                    {...defaultProps("latitud")}
+                  />
+                  <TextField
+                    hidden
+                    style={{ display: 'none' }}
+                    margin="normal"
+                    required
+                    size="medium"
+                    {...defaultProps("longitud")}
                   />
                 </Grid>
                 <Grid item xs={12} md={4} sx={{ paddingTop: '0px !important' }}>
@@ -921,652 +949,6 @@ export const Form = () => {
         </Stack>
       </form>
     </ThemeProvider></LocalizationProvider>
-
-
-
-    // return <LocalizationProvider dateAdapter={AdapterDayjs}><ThemeProvider theme={theme}>
-    //   <form ref={formRef} onSubmit={onSubmit} style={{ textAlign: 'left' }}>
-    //     <Box style={{ overflow: 'auto' }}>
-    //       <Card className='mt-1 bs-black'>
-    //         <CardContent>
-    //           <Typography gutterBottom variant="h5" className='text-center fw-bold color-gore'>
-    //             DATOS DEL DESAPARECIDO
-    //           </Typography>
-
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Nro Denuncia: "
-    //                 placeholder="Ingrese el número de Denuncia."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("nroDenuncia")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <DateTimePicker
-    //                 renderInput={(props) => <TextField {...props} />}
-    //                 required
-    //                 label="Fecha y Hora de la Denuncia:"
-    //                 value={o.fechaHoraDenuncia || ''}
-    //                 onChange={onChangeFechaHoraDenuncia}
-    //               />
-    //             </Grid>
-    //           </Grid>
-
-    //           <Grid container>
-    //             <Grid item xs={12} md={12}>
-    //               <TextField
-    //                 className='select'
-    //                 select
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Seleccione la Dependencia: "
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("dependencia")}
-    //               >
-    //                 {dependencias.map((item, i) => (
-    //                   <MenuItem key={item.id} value={item.id}>
-    //                     {item.name} - {item.descripcion}
-    //                   </MenuItem>
-    //                 ))}
-    //               </TextField>
-    //             </Grid>
-    //           </Grid>
-
-    //           <Divider variant="middle" />
-
-    //           <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
-    //             DATOS DE LOS HECHOS
-    //           </Typography>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={8}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 multiline
-    //                 size="medium"
-    //                 rows={4}
-    //                 id="standard-name"
-    //                 label="Ingrese el Lugar de los Hechos: "
-    //                 placeholder="Lugar de los Hechos"
-    //                 {...defaultProps("lugarHecho")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <DateTimePicker
-    //                 required
-    //                 renderInput={(props) => <TextField {...props} />}
-    //                 label="Fecha y Hora del Hecho:"
-    //                 value={o.fechaHoraHecho || ''}
-    //                 onChange={onChangeFechaHoraHecho}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={1}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 select
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Seleccione el Departamento: "
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("departamento")}
-    //               >
-    //                 {departamentos.map((item, i) => (
-    //                   <MenuItem key={item.code} value={item.code}>
-    //                     {item.name}
-    //                   </MenuItem>
-    //                 ))}
-    //               </TextField>
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 select
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Seleccione la Provincia: "
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("provincia", {
-    //                   // onChange: onChangeTipoDocumento
-    //                 })}
-    //               >
-    //                 {provincias.filter(e => e.code.startsWith(o.departamento)).map((item, i) => (
-    //                   <MenuItem key={item.code} value={item.code}>
-    //                     {item.name}
-    //                   </MenuItem>
-    //                 ))}
-    //               </TextField>
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 select
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Seleccione el Distrito: "
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("distrito", {
-    //                 })}
-    //               >
-    //                 {distritos.filter(e => e.code.startsWith(o.provincia)).map((item, i) => (
-    //                   <MenuItem key={item.code} value={item.code}>
-    //                     {item.name}
-    //                   </MenuItem>
-    //                 ))}
-    //               </TextField>
-    //             </Grid>
-    //           </Grid>
-
-    //           <Divider variant="middle" />
-
-    //           <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
-    //             DATOS PERSONALES
-    //           </Typography>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={6} >
-    //               <TextField
-    //                 type={'number'}
-    //                 sx={{ fontWeight: 'bold' }}
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Número de Documento: "
-    //                 placeholder="Ingrese el número de Documento."
-    //                 onKeyUp={onKeyUpNroDocumento}
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("dni")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={6}>
-    //               <img width={'20%'} src={'data:image/png;base64, ' + o.foto} />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Ingrese su Apellido Paterno: "
-    //                 placeholder="Apellido Paterno"
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("apePaterno")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Ingrese su Apellido Materno: "
-    //                 placeholder="Apellido Materno"
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("apeMaterno")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Ingrese su Nombres Completos: "
-    //                 placeholder="Nombres Completos"
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("nombres")}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={8}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Ingrese sus Dirección: "
-    //                 placeholder="Dirección"
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("direccion")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4} >
-    //               <DesktopDatePicker
-    //                 disabled={disabled()}
-    //                 label="Ingrese su Fecha de Nacimiento."
-    //                 inputFormat="DD/MM/YYYY"
-    //                 value={o.fechaNacimiento || ''}
-    //                 onChange={onChangeFechaNacimiento}
-    //                 renderInput={(params) =>
-    //                   <TextField
-    //                     type={'number'}
-    //                     sx={{ fontWeight: 'bold' }}
-    //                     margin="normal"
-    //                     required
-    //                     fullWidth
-    //                     id="standard-name"
-    //                     label="Fecha de Nacimiento: "
-    //                     placeholder="Ingrese su Fecha de Nacimiento."
-    //                     // onKeyUp={onKeyUp}
-    //                     InputProps={{
-    //                       startAdornment: (
-    //                         <InputAdornment position="start">
-    //                           <Keyboard />
-    //                         </InputAdornment>
-    //                       ),
-    //                     }}
-    //                     {...params}
-    //                   // {...defaultProps("fechaNacimiento")}
-    //                   />}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={1}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 type={'number'}
-    //                 sx={{ fontWeight: 'bold' }}
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Edad: "
-    //                 placeholder="Ingrese el Edad."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("edad")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 select
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Seleccione su Género: "
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("sexo", {
-    //                   // onChange: onChangeTipoDocumento
-    //                 })}
-    //               >
-    //                 {['Masculino', 'Femenino'].map((item, i) => (
-    //                   <MenuItem key={'houseAccess_' + i} value={item}>
-    //                     {item}
-    //                   </MenuItem>
-    //                 ))}
-    //               </TextField>
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 disabled={disabled()}
-    //                 select
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 id="standard-name"
-    //                 label="Seleccione su Estado Civil: "
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("estadoCivil", {
-    //                 })}
-    //               >
-    //                 {['Soltero(a)', 'Casado(a)', 'Conviviente', 'Viudo(a)'].map((item, i) => (
-    //                   <MenuItem key={'houseAccess_' + i} value={item}>
-    //                     {item}
-    //                   </MenuItem>
-    //                 ))}
-    //               </TextField>
-    //             </Grid>
-    //           </Grid>
-
-    //           <Divider variant="middle" />
-
-    //           <Typography gutterBottom variant="subtitle" className='fw-bold color-gore'>
-    //             CARACTERÍSTICAS
-    //           </Typography>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Tez: "
-    //                 placeholder="Tez."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("tez")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Fenotipo: "
-    //                 placeholder="Fenotipo."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("fenotipo")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Ojos: "
-    //                 placeholder="Ojos."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("ojos")}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Sangre: "
-    //                 placeholder="Sangre."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("sangre")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Boca: "
-    //                 placeholder="Boca."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("boca")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Nariz: "
-    //                 placeholder="Nariz."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("nariz")}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Cabello: "
-    //                 placeholder="Cabello."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("cabello")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Estatura: "
-    //                 placeholder="Estatura."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("estatura")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 size="medium"
-    //                 id="standard-name"
-    //                 label="Contextura: "
-    //                 placeholder="Contextura."
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <Keyboard />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 {...defaultProps("contextura")}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //           <Grid container spacing={2}>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 multiline
-    //                 size="medium"
-    //                 rows={4}
-    //                 id="standard-name"
-    //                 label="Ingrese la Vestimenta: "
-    //                 placeholder="Vestimenta"
-    //                 {...defaultProps("vestimenta")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 multiline
-    //                 size="medium"
-    //                 rows={4}
-    //                 id="standard-name"
-    //                 label="Ingrese las Circunstancias: "
-    //                 placeholder="Circunstancias"
-    //                 {...defaultProps("circunstancia")}
-    //               />
-    //             </Grid>
-    //             <Grid item xs={12} md={4}>
-    //               <TextField
-    //                 margin="normal"
-    //                 required
-    //                 fullWidth
-    //                 multiline
-    //                 size="medium"
-    //                 rows={4}
-    //                 id="standard-name"
-    //                 label="Ingrese las Observaciónes: "
-    //                 placeholder="Observación"
-    //                 {...defaultProps("observacion")}
-    //               />
-    //             </Grid>
-    //           </Grid>
-    //         </CardContent>
-    //       </Card>
-
-    //     </Box>
-    //     <Stack direction="row" justifyContent="center"
-    //       style={{ padding: '10px', backgroundColor: '#0f62ac' }}
-    //       alignItems="center" spacing={1}>
-    //       {getActions()}
-    //     </Stack>
-
-    //     {(o._id || o.id) && <Fab color="primary" aria-label="add"
-    //       onClick={onClickAdd}
-    //       style={{
-    //         position: 'absolute',
-    //         bottom: 80, right: 24
-    //       }}>
-    //       <AddIcon />
-    //     </Fab>}
-    //   </form>
-    // </ThemeProvider></LocalizationProvider >
   }
   return <>{
     1 == 1 ? <Box style={{ textAlign: 'left' }}>{getContent()}</Box>

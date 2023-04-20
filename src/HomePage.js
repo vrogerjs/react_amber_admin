@@ -89,17 +89,17 @@ const HomePage = ({ logOut, match }) => {
 
   const items = [
     {
-      perms: 'ADMIN_ATENCIONCIUDANANA', text: 'Gestión de Dependencias', icon: <QuizIcon />, path: '/dependencia', items: [
+      perms: 'ADMIN_ALERTAS_AMBER', text: 'Gestión de Dependencias', icon: <QuizIcon />, path: '/dependencia', items: [
         { text: 'Agregar', icon: <AddIcon />, path: '/dependencia/create' }
       ]
     },
     {
-      perms: 'ADMIN_ATENCIONCIUDANANA', text: 'Gestión de Desaparecidos', icon: <QuizIcon />, path: '/desaparecido', items: [
+      perms: 'ADMIN_ALERTAS_AMBER', text: 'Gestión de Desaparecidos', icon: <QuizIcon />, path: '/desaparecido', items: [
         { text: 'Agregar', icon: <AddIcon />, path: '/desaparecido/create' }
       ]
     },
     {
-      perms: 'REGISTER_ATENCIONCIUDANANA', text: 'Personas Ubicadas', icon: <QuizIcon />, path: '/ubicado'
+      perms: 'ADMIN_ALERTAS_AMBER', text: 'Personas Ubicadas', icon: <QuizIcon />, path: '/ubicado'
     },
     {
       text: 'Salir', icon: <LogoutIcon />, onClick: () => {

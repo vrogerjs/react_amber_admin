@@ -17,3 +17,14 @@ code {
 .error label,.error .MuiButtonBase-root{
   color:#d32f2f;
 }
+
+
+#marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background:url(https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Azure.png) no-repeat top center;
+  background-size:100%;
+  opacity: 1;
+  cursor: move;
+}
