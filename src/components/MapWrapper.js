@@ -9,11 +9,8 @@ import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import '../index.css';
-
 import OSM from 'ol/source/OSM';
 import DragPan from 'ol/interaction/DragPan';
-
-
 import XYZ from 'ol/source/XYZ'
 import { transform, fromLonLat, toLonLat } from 'ol/proj'
 import { toStringXY } from 'ol/coordinate';
@@ -34,7 +31,6 @@ function MapWrapper(props) {
     const mapRef = useRef()
     mapRef.current = map;
 
-
     // initialize map on first render - logic formerly put into componentDidMount
     useEffect(() => {
 
@@ -49,9 +45,6 @@ function MapWrapper(props) {
             })
 
             const onChange = props.onChange || (() => { });
-
-            console.log(props);
-
 
             var initialLocation = fromLonLat(props.location);
 
@@ -76,7 +69,6 @@ function MapWrapper(props) {
                     }), */
 
                     initalFeaturesLayer
-
                 ],
                 view: new View({
                     // projection: 'EPSG:3857',
@@ -99,6 +91,7 @@ function MapWrapper(props) {
                     },
                 },
             });
+
             setMarker(marker);
 
             var dragPan;
@@ -112,7 +105,6 @@ function MapWrapper(props) {
                 dragPan.setActive(false);
                 marker.set('dragging', true);
             });
-
 
             initialMap.on('pointermove', function (evt) {
                 if (marker.get('dragging') === true) {
@@ -147,7 +139,6 @@ function MapWrapper(props) {
         }
     }, [])
 
-
     useEffect(() => {
         if (marker && props.location) {
             marker.setPosition(fromLonLat(props.location));
@@ -175,7 +166,6 @@ function MapWrapper(props) {
         }
 
     }, [props.features])
-
 
     async function simpleReverseGeocoding(lon, lat) {
         let data = await fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + lon + '&lat=' + lat)
